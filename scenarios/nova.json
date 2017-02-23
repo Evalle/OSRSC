@@ -1,0 +1,88 @@
+{% set flavor_name = flavor_name or "m1.small" %}
+{% set image_name = image_name or "jeos" %}
+
+# run 5 instances from 'jeos' image simultaneously - (5 servers at the same time)  
+{
+    "NovaServers.boot_server": [
+       {
+           "args": {
+               "flavor": {
+                   "name": "{{flavor_name}}"
+               },
+               "image": {
+                   "name": "{{image_name}}"
+               }
+           },
+           "runner": {
+               "type": "constant",
+               "concurrency": 5,
+               "times": 5
+           },
+           "context": {
+               "users": {
+                   "users_per_tenant": 2,
+                   "tenants": 3
+               },
+               "quotas": {
+                   "nova": {
+                       "instances": -1,
+                       "cores": -1,
+               },
+             }
+           }
+       }
+   ],
+
+# run 5 instances from 'jeos' image simultaneously - (5 servers at the same time)
+# and then delete them simultaneously
+       "NovaServers.boot_and_delete_server": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "force_delete": false
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 3,
+                    "users_per_tenant": 2
+                }
+            }
+        },
+        {
+            "args": {
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "auto_assign_nic": true
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 3,
+                    "users_per_tenant": 2
+                },
+                "network": {
+                    "start_cidr": "10.2.0.0/24",
+                    "networks_per_tenant": 2
+                }
+            }
+        }
+    ]
+}
