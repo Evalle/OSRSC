@@ -84,5 +84,63 @@
                 }
             }
         }
+    ],
+
+# run 5 instances from 'jeos' image simultaneously - (5 servers at the same time)
+# and then get console output from them
+  "NovaServers.boot_and_get_console_output": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                }
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                }
+            }
+        }
+    ],
+
+# boot 47 instances and list them 
+  "NovaServers.boot_and_list_server": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "m1.tiny"
+                },
+                "image": {
+                    "name": "cirros-0.3.4-x86_64-tempest-machine"
+                },
+                "detailed": true
+            },
+            "runner": {
+                "type": "constant",
+                "times": 47,
+                "concurrency": 1
+            },
+            "context": {
+                "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                },
+                "quotas": {
+                    "nova": {
+                        "instances": -1,
+                        "cores": -1,
+                    }
+                }
+            }
+        }
     ]
 }
