@@ -1,41 +1,11 @@
 {% set flavor_name = flavor_name or "m1.small" %}
 {% set image_name = image_name or "jeos" %}
-
-# run 5 instances from 'jeos' image simultaneously - (5 servers at the same time)  
-{
-    "NovaServers.boot_server": [
-       {
-           "args": {
-               "flavor": {
-                   "name": "{{flavor_name}}"
-               },
-               "image": {
-                   "name": "{{image_name}}"
-               }
-           },
-           "runner": {
-               "type": "constant",
-               "concurrency": 5,
-               "times": 5
-           },
-           "context": {
-               "users": {
-                   "users_per_tenant": 2,
-                   "tenants": 3
-               },
-               "quotas": {
-                   "nova": {
-                       "instances": -1,
-                       "cores": -1,
-               },
-             }
-           }
-       }
-   ],
+{% set volume_type = volume_type or "" %} 
 
 # run 5 instances from 'jeos' image simultaneously - (5 servers at the same time)
 # and then delete them simultaneously
-       "NovaServers.boot_and_delete_server": [
+{
+    "NovaServers.boot_and_delete_server": [
         {
             "args": {
                 "flavor": {
@@ -142,5 +112,84 @@
                 }
             }
         }
+    ],
+# boot 5 servers and migrate (live) them simultaneously - (5 servers at the same time) 
+  "NovaServers.boot_and_live_migrate_server": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "m1.smaller"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "block_migration": true
+            },
+            "runner": {
+                "type": "constant",
+                "times": 20,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                }
+            }
+        }
+    ],
+
+# boot 5 servers and migrate (cold) them simultaneously - (5 servers at the same time) 
+ "NovaServers.boot_and_migrate_server": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "m1.smaller"
+                }
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                }
+            }
+        }
+    ],
+# Boot server from cinder volume and delete server 
+  "NovaServers.boot_server_from_volume_and_delete": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "volume_size": 10,
+                "volume_type": "{{volume_type}}",
+                "force_delete": true
+            },
+            "runner": {
+                "type": "constant",
+                "times": 10,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 3,
+                    "users_per_tenant": 2
+                }
+            }
+        }
     ]
+}
+
 }
