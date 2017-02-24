@@ -300,6 +300,31 @@
                 }
             }
         }
+    ],
+# Boot server, create image, delete server, boot server from image (5 servers at the same time
+    "NovaServers.snapshot_server": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "force_delete": false
+            },
+            "runner": {
+                "type": "constant",
+                "times": 10,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 3,
+                    "users_per_tenant": 2
+                }
+            }
+        }
     ]
- 
 }
+
