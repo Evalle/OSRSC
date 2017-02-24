@@ -301,8 +301,83 @@
             }
         }
     ],
-# Boot server, create image, delete server, boot server from image (5 servers at the same time
+# Boot server, create image, delete server, boot server from image (5 servers at the same time)
     "NovaServers.snapshot_server": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "force_delete": false
+            },
+            "runner": {
+                "type": "constant",
+                "times": 10,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 3,
+                    "users_per_tenant": 2
+                }
+            }
+        }
+    ],
+# Boot, pause and unpause servers (5 servers at the same time)
+    "NovaServers.pause_and_unpause_server": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "force_delete": false
+            },
+            "runner": {
+                "type": "constant",
+                "times": 10,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 3,
+                    "users_per_tenant": 2
+                }
+            }
+        }
+    ],
+# Boot server, suspend it, resume it (5 servers at the same time)
+  "NovaServers.suspend_and_resume_server": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "force_delete": false
+            },
+            "runner": {
+                "type": "constant",
+                "times": 10,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 3,
+                    "users_per_tenant": 2
+                }
+            }
+        }
+    ],
+# Boot server, shelve it, unshelve it (5 servers at the same time)
+ "NovaServers.shelve_and_unshelve_server": [
         {
             "args": {
                 "flavor": {
