@@ -139,15 +139,15 @@
         }
     ],
 
-# boot 5 servers and migrate (cold) them simultaneously - (5 servers at the same time) 
+# Boot 5 servers and migrate (cold) them simultaneously - (5 servers at the same time) 
  "NovaServers.boot_and_migrate_server": [
         {
             "args": {
                 "flavor": {
-                    "name": "{{flavor_name}}"
+                    "name": "m1.smaller"
                 },
                 "image": {
-                    "name": "m1.smaller"
+                    "name": "{{image_name}}"
                 }
             },
             "runner": {
@@ -163,7 +163,7 @@
             }
         }
     ],
-# Boot server from cinder volume and delete server 
+# Boot 10 servers from volume and delete them (5 servers at the same time) 
   "NovaServers.boot_server_from_volume_and_delete": [
         {
             "args": {
@@ -189,7 +189,38 @@
                 }
             }
         }
+    ], 
+# Boot 5 servers with m1.smaller flavor and resize them to m1.small flavor
+  "NovaServers.boot_server_from_volume_and_resize": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "m1.smaller"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "to_flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "confirm": true,
+                "volume_size": 1,
+                "force_delete": false,
+                "do_delete": true,
+                "boot_server_kwargs": {},
+                "create_volume_kwargs": {}
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 1
+            },
+            "context": {
+                "users": {
+                    "tenants": 3,
+                    "users_per_tenant": 2
+                }
+            }
+        }
     ]
-}
-
 }
