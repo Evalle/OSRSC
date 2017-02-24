@@ -228,7 +228,7 @@
         {
             "args": {
                 "flavor": {
-                    "name": "{{flavor_name}}"
+                    "name": "m1.smaller"
                 },
                 "image": {
                     "name": "{{image_name}}"
@@ -283,7 +283,7 @@
                     "name": "{{image_name}}"
                 },
                 "flavor": {
-                    "name": "{{flavor_name}}"
+                    "name": "m1.smaller"
                 },
                 "boot_server_kwargs": {},
                 "create_volume_kwargs": {}
@@ -306,7 +306,7 @@
         {
             "args": {
                 "flavor": {
-                    "name": "{{flavor_name}}"
+                    "name": "m1.smaller"
                 },
                 "image": {
                     "name": "{{image_name}}"
@@ -326,7 +326,7 @@
             }
         }
     ],
-# Boot, pause and unpause servers (5 servers at the same time)
+# Boot, pause and unpause servers (2 servers at the same time)
     "NovaServers.pause_and_unpause_server": [
         {
             "args": {
@@ -341,7 +341,7 @@
             "runner": {
                 "type": "constant",
                 "times": 10,
-                "concurrency": 5
+                "concurrency": 2
             },
             "context": {
                 "users": {
@@ -351,7 +351,7 @@
             }
         }
     ],
-# Boot server, suspend it, resume it (5 servers at the same time)
+# Boot server, suspend it, resume it (2 servers at the same time)
   "NovaServers.suspend_and_resume_server": [
         {
             "args": {
@@ -366,7 +366,7 @@
             "runner": {
                 "type": "constant",
                 "times": 10,
-                "concurrency": 5
+                "concurrency": 2
             },
             "context": {
                 "users": {
@@ -376,7 +376,7 @@
             }
         }
     ],
-# Boot server, shelve it, unshelve it (5 servers at the same time)
+# Boot server, shelve it, unshelve it (2 servers at the same time)
  "NovaServers.shelve_and_unshelve_server": [
         {
             "args": {
@@ -391,7 +391,7 @@
             "runner": {
                 "type": "constant",
                 "times": 10,
-                "concurrency": 5
+                "concurrency": 2
             },
             "context": {
                 "users": {
