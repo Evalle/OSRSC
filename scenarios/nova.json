@@ -248,6 +248,58 @@
                 }
             }
         }
+    ],
+# Boot, lock, unlock and delete 10 servers (5 servers at the same time)
+  "NovaServers.boot_lock_unlock_and_delete": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                }
+            },
+            "runner": {
+                "type": "constant",
+                "times": 10,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                }
+            }
+        }
+    ],
+# Boot 4 servers, create cinder volume, attach volume, live migrate them (4 servers at the same time)
+  "NovaServers.boot_server_attach_created_volume_and_live_migrate": [
+        {
+            "args": {
+                "size": 10,
+                "block_migration": true,
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "boot_server_kwargs": {},
+                "create_volume_kwargs": {}
+            },
+            "runner": {
+                "type": "constant",
+                "times": 4,
+                "concurrency": 4
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            }
+        }
     ]
-
+ 
 }
