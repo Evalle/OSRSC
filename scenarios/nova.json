@@ -222,5 +222,32 @@
                 }
             }
         }
+    ],
+# Boot servers from the volume snaphost (2 servers at the same time)
+    "NovaServers.boot_server_from_volume_snapshot": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "volume_size": 10,
+                "volume_type": "{{volume_type}}"
+            },
+            "runner": {
+                "type": "constant",
+                "times": 6,
+                "concurrency": 2
+            },
+            "context": {
+                "users": {
+                    "tenants": 3,
+                    "users_per_tenant": 2
+                }
+            }
+        }
     ]
+
 }
