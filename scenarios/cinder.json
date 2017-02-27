@@ -1,0 +1,516 @@
+{% set flavor_name = flavor_name or "m1.small" %}
+{% set image_name = image_name or "jeos" %}
+{% set volume_type = volume_type or "" %}
+{% set availability_zone = availability_zone or "nova" %}
+
+# Create a volume type, delete a volume type
+{
+  "CinderVolumeTypes.create_and_delete_volume_type": [
+        {
+            "args": {},
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            },
+            "sla": {
+                "failure_rate": {
+                    "max": 0
+                }
+            }
+        }
+    ],
+
+# Create and delete volume
+   "CinderVolumes.create_and_delete_volume": [
+        {
+            "args": {
+                "size": 1
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            }
+        },
+        {
+            "args": {
+                "size": {
+                    "min": 1,
+                    "max": 5
+                }
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            }
+        }
+    ],
+
+# Create, extend, delete a volume
+
+   "CinderVolumes.create_and_extend_volume": [
+        {
+            "args": {
+                "size": 1,
+                "new_size": 2
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                }
+            }
+        },
+        {
+            "args": {
+                "size": {
+                    "min": 1,
+                    "max": 5
+                },
+                "new_size": {
+                    "min": 6,
+                    "max": 10
+                }
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                }
+            }
+        }
+    ],
+
+# Create and get volumes 
+
+  "CinderVolumes.create_and_get_volume": [
+        {
+            "args": {
+                "size": 1
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            },
+            "sla": {
+                "failure_rate": {
+                    "max": 0
+                }
+            }
+        },
+        {
+            "args": {
+                "size": {
+                    "min": 1,
+                    "max": 5
+                }
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            },
+            "sla": {
+                "failure_rate": {
+                    "max": 0
+                }
+            }
+        }
+    ],
+
+# Boot a server, create a volume, attach a volume to the server, detach the volume, delete the volume, delete the server 
+
+    "CinderVolumes.create_and_attach_volume": [
+        {
+            "args": {
+                "size": 10,
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "create_volume_params": {
+                    "availability_zone": "{{availability_zone}}"
+                }
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 1
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            }
+        },
+        {
+            "args": {
+                "size": {
+                    "min": 1,
+                    "max": 5
+                },
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "{{image_name}}"
+                },
+                "create_volume_params": {
+                    "availability_zone": "{{availability_zone}}"
+                }
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 1
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            }
+        }
+    ],
+
+# Create and delete a snapshot
+ 
+  "CinderVolumes.create_and_delete_snapshot": [
+        {
+            "args": {
+                "force": false
+            },
+            "runner": {
+                "type": "constant",
+                "times": 3,
+                "concurrency": 2
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                },
+                "volumes": {
+                    "size": 1
+                }
+            }
+        }
+    ],
+
+# Create and list snapshot
+
+ "CinderVolumes.create_and_list_snapshots": [
+        {
+            "args": {
+                "force": false,
+                "detailed": true
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                },
+                "volumes": {
+                    "size": 1
+                }
+            }
+        }
+    ],
+
+# Create a volume and list volumes 
+
+   "CinderVolumes.create_and_list_volume": [
+        {
+            "args": {
+                "size": 1,
+                "detailed": true
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 1
+            },
+            "context": {
+                "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                }
+            }
+        },
+        {
+            "args": {
+                "size": {
+                    "min": 1,
+                    "max": 5
+                },
+                "detailed": true
+            },
+            "runner": {
+                "type": "constant",
+                "times": 3,
+                "concurrency": 1
+            },
+            "context": {
+                "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                }
+            }
+        }
+    ],
+
+# Create a volume and update readonly flag
+
+    "CinderVolumes.create_volume_and_update_readonly_flag": [
+        {
+            "args": {
+                "size": 1,
+                "read_only": true
+            },
+            "runner": {
+                "type": "constant",
+                "times": 3,
+                "concurrency": 2
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            },
+            "sla": {
+                "failure_rate": {
+                    "max": 0
+                }
+            }
+        }
+    ],
+
+# Create a volume and update a volume
+
+    "CinderVolumes.create_and_update_volume": [
+        {
+            "args": {
+                "create_volume_kwargs": {},
+                "update_volume_kwargs": {
+                    "display_name": "name_updated",
+                    "display_description": "desc_updated"
+                 },
+                "size": 1
+            },
+            "runner": {
+                "type": "constant",
+                "times": 5,
+                "concurrency": 5
+            },
+            "context": {
+                "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                }
+            }
+        }
+    ],
+
+# Create a volume, upload the volume to an image, delete the volume, delete the image
+
+  "CinderVolumes.create_and_upload_volume_to_image": [
+        {
+            "args": {
+                "size": 1,
+                "force": false,
+                "container_format": "bare",
+                "disk_format": "raw",
+                "do_delete": true,
+                "image": {
+                    "name": "{{image_name}}"
+                }
+            },
+            "runner": {
+                "type": "constant",
+                "times": 3,
+                "concurrency": 2
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            }
+        },
+        {
+            "args": {
+                "size": {
+                    "min": 1,
+                    "max": 5
+                },
+                "force": false,
+                "container_format": "bare",
+                "disk_format": "raw",
+                "do_delete": true,
+                "image": {
+                    "name": "{{image_name}}"
+                }
+            },
+            "runner": {
+                "type": "constant",
+                "times": 3,
+                "concurrency": 2
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            }
+        }
+    ],
+
+# Create nested snapshot and attach volume
+
+    "CinderVolumes.create_nested_snapshots_and_attach_volume": [
+        {
+            "args": {
+                "size": {
+                    "min": 1,
+                    "max": 5
+                },
+                "nested_level": 5
+            },
+            "runner": {
+                "type": "constant",
+                "times": 1,
+                "concurrency": 1
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 1
+                },
+                "servers": {
+                    "image": {
+                        "name": "{{image_name}}"
+                    },
+                    "flavor": {
+                        "name": "{{flavor_name}}"
+                    },
+                    "servers_per_tenant": 2
+                }
+            }
+        }
+    ],
+
+# Create a volume and clone it
+
+  "CinderVolumes.create_volume_and_clone": [
+        {
+            "args": {
+                "size": 1
+            },
+            "runner": {
+                "type": "constant",
+                "times": 3,
+                "concurrency": 2
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            }
+        },
+        {
+            "args": {
+                "size": {
+                    "min": 1,
+                    "max": 5
+                },
+                "nested_level": 3
+            },
+            "runner": {
+                "type": "constant",
+                "times": 3,
+                "concurrency": 2
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            }
+        }
+    ],
+
+# Set 3 metadatas 10 times, delete 3 metadatas 5 times
+
+  "CinderVolumes.modify_volume_metadata": [
+        {
+            "args": {},
+            "runner": {
+                "type": "constant",
+                "times": 10,
+                "concurrency": 2
+            },
+            "context": {
+                "volumes": {
+                    "size": 1
+                },
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                }
+            }
+        }
+    ]
+}
